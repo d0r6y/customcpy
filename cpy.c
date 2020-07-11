@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -13,15 +14,11 @@ int main(int argc, char * argv[])
 	char buf[257];
 	int len;
 
-
-	// escape
-	// if input is two, all files
-	// if input is three, file file folder
-
-
 	if (argc < 3) {	
 		printf("Usage : %s <filename1> <filename2> \n", argv[0]);					// Case1 : file copy
-		printf("or\nUsage : %s <filename1> <filename2> ... <directory name> \n", argv[0]);		// Case2 : files to folder copy
+		printf("OR\nUsage : %s <filename1> <filename2> ... <directory name> \n", argv[0]);		// Case2 : files to folder copy
+		printf("Ex1) ./customcpy srcfile destfile\n");
+		printf("Ex2) ./customcpy targetfile1 targetfile2 targetfile3 /home/d0r6y/dest/\n");		// Example
 		return 0;
 	}
 
@@ -41,13 +38,17 @@ int main(int argc, char * argv[])
 		return 0;
 	}
 	
-
 	for(int i=1;i<=num-2;i++){										// Case2
 		strcpy(destpath, argv[num-1]);									// destpath = destination folder path
+		
+		int destlen = strlen(destpath);
+		if(destpath[destlen-1] != '/'){									// if destpath is not terminated with /, add /
+			strcat(destpath,"/");
+		}
+			
 		fd = fopen(argv[i], "r");									// open input files
 		
 		strcat(destpath, argv[i]);									// new files path = destination folder path + original file name
-
 		dest = fopen(destpath, "w");
 
 		while (len = fread(buf, 1, 256, fd))								// Same as Case1
